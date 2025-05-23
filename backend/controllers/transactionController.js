@@ -1,4 +1,4 @@
-// controllers/transaction.controller.js
+
 import { pool } from '../db/db.js';
 
 export const getTransactions = async (req, res) => {
