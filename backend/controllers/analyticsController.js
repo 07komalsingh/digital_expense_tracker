@@ -1,4 +1,3 @@
-// controllers/analytics.controller.js
 import { pool } from '../db/db.js';
 
 export const getTransactionsByDateRange = async (req, res) => {
@@ -9,7 +8,7 @@ export const getTransactionsByDateRange = async (req, res) => {
   }
 
   try {
-    // Get transactions in date range
+    
     const [transactions] = await pool.query(
       `SELECT t.*, c.name as category_name 
        FROM transactions t 
@@ -19,7 +18,7 @@ export const getTransactionsByDateRange = async (req, res) => {
       [req.user.id, startDate, endDate]
     );
 
-    // Calculate category totals and percentages
+
     const categoryTotals = {};
     let grandTotal = 0;
 
@@ -40,7 +39,7 @@ export const getTransactionsByDateRange = async (req, res) => {
       grandTotal += amount;
     });
 
-    // Convert to array and add percentages
+
     const categories = Object.values(categoryTotals).map(category => ({
       ...category,
       percentage: grandTotal > 0 ? (category.total / grandTotal) * 100 : 0
