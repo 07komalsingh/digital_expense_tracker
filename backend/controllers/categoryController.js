@@ -1,4 +1,3 @@
-
 import { pool } from '../db/db.js';
 
 export const getCategories = async (req, res) => {
@@ -32,7 +31,6 @@ export const createCategory = async (req, res) => {
       return res.status(400).json({ msg: 'Category already exists' });
     }
 
-    // Check if user has reached the limit of 15 categories
     const [categoryCount] = await pool.query(
       'SELECT COUNT(*) as count FROM categories WHERE user_id = ?',
       [req.user.id]
@@ -42,13 +40,13 @@ export const createCategory = async (req, res) => {
       return res.status(400).json({ msg: 'Maximum 15 categories allowed' });
     }
 
-    // Create new category
+
     const [result] = await pool.query(
       'INSERT INTO categories (user_id, name) VALUES (?, ?)',
       [req.user.id, name.trim()]
     );
 
-    // Return the created category
+
     const [newCategory] = await pool.query(
       'SELECT * FROM categories WHERE id = ?',
       [result.insertId]
@@ -65,7 +63,7 @@ export const deleteCategory = async (req, res) => {
   const categoryId = req.params.id;
 
   try {
-    // Check if category belongs to the user
+ 
     const [category] = await pool.query(
       'SELECT * FROM categories WHERE id = ? AND user_id = ?',
       [categoryId, req.user.id]
@@ -75,7 +73,6 @@ export const deleteCategory = async (req, res) => {
       return res.status(404).json({ msg: 'Category not found' });
     }
 
-    // Check if category has transactions
     const [transactions] = await pool.query(
       'SELECT COUNT(*) as count FROM transactions WHERE category_id = ?',
       [categoryId]
@@ -85,7 +82,6 @@ export const deleteCategory = async (req, res) => {
       return res.status(400).json({ msg: 'Cannot delete category with existing transactions' });
     }
 
-    // Delete category
     await pool.query('DELETE FROM categories WHERE id = ?', [categoryId]);
 
     res.json({ msg: 'Category deleted successfully' });
