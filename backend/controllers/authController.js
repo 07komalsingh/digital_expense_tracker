@@ -1,4 +1,3 @@
-// controllers/auth.controller.js
 import { pool } from '../db/db.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
