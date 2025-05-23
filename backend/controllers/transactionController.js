@@ -1,4 +1,3 @@
-
 import { pool } from '../db/db.js';
 
 export const getTransactions = async (req, res) => {
@@ -30,7 +29,6 @@ export const createTransaction = async (req, res) => {
   }
 
   try {
-    // Verify category belongs to user
     const [category] = await pool.query(
       'SELECT * FROM categories WHERE id = ? AND user_id = ?',
       [category_id, req.user.id]
@@ -40,13 +38,11 @@ export const createTransaction = async (req, res) => {
       return res.status(400).json({ msg: 'Invalid category' });
     }
 
-    // Create transaction
     const [result] = await pool.query(
       'INSERT INTO transactions (user_id, category_id, amount, note, date) VALUES (?, ?, ?, ?, ?)',
       [req.user.id, category_id, parseFloat(amount), note || null, date || new Date().toISOString().split('T')[0]]
     );
 
-    // Get the created transaction with category name
     const [newTransaction] = await pool.query(
       `SELECT t.*, c.name as category_name 
        FROM transactions t 
@@ -76,7 +72,6 @@ export const deleteTransaction = async (req, res) => {
       return res.status(404).json({ msg: 'Transaction not found' });
     }
 
-    // Delete transaction
     await pool.query('DELETE FROM transactions WHERE id = ?', [transactionId]);
 
     res.json({ msg: 'Transaction deleted successfully' });
